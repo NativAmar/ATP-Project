@@ -20,7 +20,7 @@ public class MyMazeGenerator extends AMazeGenerator {
 
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                maze.setmaze(i, j, 1); // אתחול כל התאים לקירות
+                maze.setMaze(i, j, 1); // אתחול כל התאים לקירות
             }
         }
 
@@ -28,7 +28,7 @@ public class MyMazeGenerator extends AMazeGenerator {
         Position start = getRandomOddEdgePosition(row, column);
         int start_row = start.getRowIndex();
         int start_col = start.getColumnIndex();
-        maze.setmaze(start_row, start_col, 0); // תא מעבר
+        maze.setMaze(start_row, start_col, 0); // תא מעבר
 
         // מוסיף את הקירות הסמוכים
         if (start_row - 2 > 0)
@@ -53,29 +53,29 @@ public class MyMazeGenerator extends AMazeGenerator {
             // כיוון למעלה-למטה
             if (isInside(maze, newpos1) && isInside(maze, newpos3) &&
                     maze.getPosition(newpos1) == 0 && maze.getPosition(newpos3) == 1) {
-                maze.setmaze(chosenWall.getRowIndex(), chosenWall.getColumnIndex(), 0);
-                maze.setmaze(newpos3.getRowIndex(), newpos3.getColumnIndex(), 0);
+                maze.setMaze(chosenWall.getRowIndex(), chosenWall.getColumnIndex(), 0);
+                maze.setMaze(newpos3.getRowIndex(), newpos3.getColumnIndex(), 0);
                 addSurroundingWalls(walls, newpos3, maze);
             }
             // כיוון שמאל-ימין
             else if (isInside(maze, newpos2) && isInside(maze, newpos4) &&
                     maze.getPosition(newpos2) == 0 && maze.getPosition(newpos4) == 1) {
-                maze.setmaze(chosenWall.getRowIndex(), chosenWall.getColumnIndex(), 0);
-                maze.setmaze(newpos4.getRowIndex(), newpos4.getColumnIndex(), 0);
+                maze.setMaze(chosenWall.getRowIndex(), chosenWall.getColumnIndex(), 0);
+                maze.setMaze(newpos4.getRowIndex(), newpos4.getColumnIndex(), 0);
                 addSurroundingWalls(walls, newpos4, maze);
             }
             // כיוון למטה-למעלה (הפוך)
             else if (isInside(maze, newpos3) && isInside(maze, newpos1) &&
                     maze.getPosition(newpos3) == 0 && maze.getPosition(newpos1) == 1) {
-                maze.setmaze(chosenWall.getRowIndex(), chosenWall.getColumnIndex(), 0);
-                maze.setmaze(newpos1.getRowIndex(), newpos1.getColumnIndex(), 0);
+                maze.setMaze(chosenWall.getRowIndex(), chosenWall.getColumnIndex(), 0);
+                maze.setMaze(newpos1.getRowIndex(), newpos1.getColumnIndex(), 0);
                 addSurroundingWalls(walls, newpos1, maze);
             }
             // כיוון ימין-שמאל (הפוך)
             else if (isInside(maze, newpos4) && isInside(maze, newpos2) &&
                     maze.getPosition(newpos4) == 0 && maze.getPosition(newpos2) == 1) {
-                maze.setmaze(chosenWall.getRowIndex(), chosenWall.getColumnIndex(), 0);
-                maze.setmaze(newpos2.getRowIndex(), newpos2.getColumnIndex(), 0);
+                maze.setMaze(chosenWall.getRowIndex(), chosenWall.getColumnIndex(), 0);
+                maze.setMaze(newpos2.getRowIndex(), newpos2.getColumnIndex(), 0);
                 addSurroundingWalls(walls, newpos2, maze);
             }
         }

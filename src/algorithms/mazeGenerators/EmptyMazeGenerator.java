@@ -5,7 +5,7 @@ public class EmptyMazeGenerator extends AMazeGenerator {
         Maze emptyMaze=new Maze(row,columns);
         for(int r=0;r<row;r++){
             for(int c=0;c<columns;c++){
-                emptyMaze.setmaze(r,c,0);
+                emptyMaze.setMaze(r,c,0);
             }
         }
         emptyMaze.setStartPosition(new Position(0, 0));

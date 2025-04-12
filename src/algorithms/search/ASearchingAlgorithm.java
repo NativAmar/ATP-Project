@@ -1,4 +1,10 @@
 package algorithms.search;
 
-public class ASearchingAlgorithm {
+public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
+    private int nodesEvaluated;
+
+    public ASearchingAlgorithm () {
+        this.nodesEvaluated = 0;
+    }
+
 }

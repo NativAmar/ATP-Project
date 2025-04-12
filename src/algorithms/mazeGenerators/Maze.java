@@ -7,20 +7,24 @@ public class Maze {
     private int columns;
     private Position start;
     private Position end;
+
     public Maze(int row,int columns){
         this.row=row;
         this.columns=columns;
         this.maze=new int[row][columns];
     }
-    public void setmaze(int row,int column,int value){
+
+    public void setMaze(int row, int column, int value){
         if(value!=0&&value!=1){
             throw new IllegalArgumentException("Invalid value for maze cell: " + value + ". Only 0 or 1 allowed.");
         }
         this.maze[row][column]=value;
     }
+
     public void setStartPosition(Position start_pos){
         this.start=start_pos;
     }
+
     public void setGoalPosition(Position end_pos){
         this.end=end_pos;
     }
@@ -28,9 +32,11 @@ public class Maze {
     public Position getStartPosition(){
         return this.start;
     }
+
     public Position getGoalPosition(){
         return this.end;
     }
+
     public int getPosition(Position p){
         return maze[p.getRowIndex()][p.getColumnIndex()];
     }
@@ -46,7 +52,6 @@ public class Maze {
     public int getCell(int r,int c){
         return this.maze[r][c];
     }
-
 
     public void print(){
         for(int i=0;i<this.row;i++){
@@ -64,5 +69,4 @@ public class Maze {
             System.out.println();
         }
     }
-
 }
