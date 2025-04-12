@@ -18,12 +18,21 @@ public class Maze {
         }
         this.maze[row][column]=value;
     }
+    public void setStartPosition(Position start_pos){
+        this.start=start_pos;
+    }
+    public void setGoalPosition(Position end_pos){
+        this.end=end_pos;
+    }
 
     public Position getStartPosition(){
         return this.start;
     }
-    public Position getEndPosition(){
+    public Position getGoalPosition(){
         return this.end;
+    }
+    public int getPosition(Position p){
+        return maze[p.getRowIndex()][p.getColumnIndex()];
     }
 
     public int getColumn(){
@@ -36,6 +45,24 @@ public class Maze {
 
     public int getCell(int r,int c){
         return this.maze[r][c];
+    }
+
+
+    public void print(){
+        for(int i=0;i<this.row;i++){
+            for(int j=0;j<this.columns;j++){
+                if(start!=null&&i== start.getRowIndex()&&j== start.getColumnIndex()){
+                    System.out.print('S');
+                } else if (end!=null&&i==end.getRowIndex()&&j==end.getColumnIndex()) {
+                    System.out.print('E');
+
+                }
+                else{
+                    System.out.print(maze[i][j]);
+                }
+            }
+            System.out.println();
+        }
     }
 
 }

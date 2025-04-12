@@ -8,6 +8,8 @@ public class EmptyMazeGenerator extends AMazeGenerator {
                 emptyMaze.setmaze(r,c,0);
             }
         }
+        emptyMaze.setStartPosition(new Position(0, 0));
+        emptyMaze.setGoalPosition(new Position(row - 1, columns - 1));
         return emptyMaze;
     }
 

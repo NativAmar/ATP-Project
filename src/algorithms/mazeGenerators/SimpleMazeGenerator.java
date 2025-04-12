@@ -32,7 +32,8 @@ public class SimpleMazeGenerator extends AMazeGenerator {
         craveSimplePath(maze,start,goal);
         int numberOfRandomZeros = (row * columns) / 6;
         addRandomZeros(maze, numberOfRandomZeros);
-
+        maze.setStartPosition(start);
+        maze.setGoalPosition(goal);
 
         return maze;
     }
