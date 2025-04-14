@@ -11,6 +11,7 @@ public class Maze {
     private Position start;
     private Position end;
 
+
     /**
      * Constructs a Maze object with the given dimensions.
      *
@@ -21,6 +22,7 @@ public class Maze {
         this.row = row;
         this.columns = columns;
         this.maze = new int[row][columns];
+
     }
 
     /**
@@ -30,7 +32,7 @@ public class Maze {
      * @param column the column index
      * @param value  the value (0 for path, 1 for wall)
      */
-    public void setmaze(int row, int column, int value) {
+    public void setMaze(int row, int column, int value) {
         if (value != 0 && value != 1) {
             throw new IllegalArgumentException("Invalid value for maze cell: " + value + ". Only 0 or 1 allowed.");
         }
@@ -64,6 +66,7 @@ public class Maze {
         return this.start;
     }
 
+
     /**
      * Returns the goal position of the maze.
      *
@@ -80,6 +83,7 @@ public class Maze {
      * @return 0 or 1 depending on whether the cell is a path or wall
      */
     public int getPosition(Position p) {
+
         return maze[p.getRowIndex()][p.getColumnIndex()];
     }
 
@@ -112,6 +116,7 @@ public class Maze {
         return this.maze[r][c];
     }
 
+
     /**
      * Prints the maze to the console.
      * 'S' marks the start, 'E' marks the end, 0 is path, and 1 is wall.
@@ -120,6 +125,7 @@ public class Maze {
         for (int i = 0; i < this.row; i++) {
             for (int j = 0; j < this.columns; j++) {
                 if (start != null && i == start.getRowIndex() && j == start.getColumnIndex()) {
+
                     System.out.print('S');
                 } else if (end != null && i == end.getRowIndex() && j == end.getColumnIndex()) {
                     System.out.print('E');

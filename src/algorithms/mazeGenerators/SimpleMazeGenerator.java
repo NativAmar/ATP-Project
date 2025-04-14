@@ -27,7 +27,9 @@ public class SimpleMazeGenerator extends AMazeGenerator {
 
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < columns; j++) {
-                maze.setmaze(i, j, 1); // all walls
+
+                maze.setMaze(i, j, 1); // all walls
+
             }
         }
 
@@ -37,8 +39,8 @@ public class SimpleMazeGenerator extends AMazeGenerator {
             goal = getRandomEdgePosition(row, columns);
         } while (getManhattanDistance(start, goal) < 2 || start.equals(goal));
 
-        maze.setmaze(start.getRowIndex(), start.getColumnIndex(), 0);
-        maze.setmaze(goal.getRowIndex(), goal.getColumnIndex(), 0);
+        maze.setMaze(start.getRowIndex(), start.getColumnIndex(), 0);
+        maze.setMaze(goal.getRowIndex(), goal.getColumnIndex(), 0);
 
         craveSimplePath(maze, start, goal);
         int numberOfRandomZeros = (row * columns) / 6;
@@ -73,21 +75,23 @@ public class SimpleMazeGenerator extends AMazeGenerator {
                 Math.abs(p1.getColumnIndex() - p2.getColumnIndex());
     }
 
+
     /**
      * Carves a direct path from start to goal (row-first then column).
      */
     private void craveSimplePath(Maze maze, Position start, Position goal) {
         int currentRow = start.getRowIndex();
         int currentCol = start.getColumnIndex();
-        maze.setmaze(currentRow, currentCol, 0);
+        maze.setMaze(currentRow, currentCol, 0);
         while (currentRow != goal.getRowIndex()) {
             currentRow += (goal.getRowIndex() > currentRow) ? 1 : -1;
-            maze.setmaze(currentRow, currentCol, 0);
+            maze.setMaze(currentRow, currentCol, 0);
         }
         while (currentCol != goal.getColumnIndex()) {
             currentCol += (goal.getColumnIndex() > currentCol) ? 1 : -1;
-            maze.setmaze(currentRow, currentCol, 0);
+            maze.setMaze(currentRow, currentCol, 0);
         }
+
     }
 
     /**
@@ -102,7 +106,7 @@ public class SimpleMazeGenerator extends AMazeGenerator {
             int r = rand.nextInt(rows);
             int c = rand.nextInt(cols);
             if (maze.getCell(r, c) == 1) {
-                maze.setmaze(r, c, 0);
+                maze.setMaze(r, c, 0);
                 added++;
             }
         }
