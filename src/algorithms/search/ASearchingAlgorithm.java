@@ -7,5 +7,5 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
     public ASearchingAlgorithm () {
         this.nodesEvaluated = 0;
     }
-    
+
 }
