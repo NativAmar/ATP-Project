@@ -48,7 +48,12 @@ public class BestFirstSearch extends ASearchingAlgorithm {
     }
 
     @Override
-    public int getNumOfNodesEvaluated() {
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public int getNumberOfNodesEvaluated() {
         return this.nodesEvaluated;
     }
 }

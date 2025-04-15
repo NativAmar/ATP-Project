@@ -15,7 +15,7 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
         this.nodesEvaluated = 0;
     }
 
-    public abstract int getNumOfNodesEvaluated();
+    public abstract int getNumberOfNodesEvaluated();
 
     protected Solution validSolution(AState goal) {
         ArrayList<AState> sol = new ArrayList<>();
@@ -32,5 +32,7 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
     }
 
     public abstract Solution solve(ISearchable searchable);
+
+    public abstract String getName();
 
 }

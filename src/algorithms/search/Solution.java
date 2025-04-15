@@ -16,7 +16,7 @@ public class Solution {
         }
     }
 
-    public ArrayList<AState> getSolution() {
+    public ArrayList<AState> getSolutionPath() {
         return solution;
     }
 

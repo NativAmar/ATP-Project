@@ -36,21 +36,25 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
                 ArrayList<AState> neighbors = searchable.getAllPossibleStates(current);
 
                 for (AState neighbor : neighbors) {
-                    if (!closedSet.contains(neighbor)) {
+                    if (!closedSet.contains(neighbor) && !openList.contains(neighbor)) {
                         neighbor.setCameFrom(current);
                         neighbor.setCost(current.getCost() + 1);
                         openList.push(neighbor);
                     }
                 }
             }
-
         }
         // In case it's not possible to reach the goalPos
         return null;
     }
 
     @Override
-    public int getNumOfNodesEvaluated() {
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public int getNumberOfNodesEvaluated() {
         return this.nodesEvaluated;
     }
 }
