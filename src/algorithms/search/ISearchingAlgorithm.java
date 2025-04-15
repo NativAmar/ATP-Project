@@ -5,4 +5,5 @@ public interface ISearchingAlgorithm {
     Solution solve(ISearchable searchable);
 
     int getNumOfNodesEvaluated();
+
 }

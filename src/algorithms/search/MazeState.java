@@ -7,7 +7,7 @@ public class MazeState extends AState {
     private Position position;
 
     public MazeState(int row, int col, MazeState cameFrom) {
-        super(cameFrom, 0);
+        super(cameFrom, 0.0);
         this.position = new Position(row, col);
     }
 
@@ -31,6 +31,14 @@ public class MazeState extends AState {
         return this.position.equals(other.position);
     }
 
+    @Override
+    public int hashCode() {
+        return getPosition().hashCode();
+    }
 
+    @Override
+    public int compareTo(AState other) {
+        return Double.compare(this.getCost(), other.getCost());
+    }
 
 }

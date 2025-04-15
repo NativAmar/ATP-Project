@@ -35,17 +35,17 @@ public class SearchableMaze implements ISearchable {
         int col = pos.getColumnIndex();
 
         int[][] straightDirs = {
-                {-1, 0}, // UP
-                {0, 1},  // RIGHT
-                {1, 0},  // DOWN
-                {0, -1}  // LEFT
+                {-1, 0}, // Up
+                {0, 1},  // Right
+                {1, 0},  // Down
+                {0, -1}  // Left
         };
 
         int[][] diagonalDirs = {
-                {-1, -1}, // UP-LEFT
-                {-1, 1},  // UP-RIGHT
-                {1, 1},   // DOWN-RIGHT
-                {1, -1}   // DOWN-LEFT
+                {-1, -1}, // Up - Left
+                {-1, 1},  // Up - Right
+                {1, 1},   // Down - Right
+                {1, -1}   // Down - Left
         };
 
         // Handle straight directions
@@ -57,7 +57,7 @@ public class SearchableMaze implements ISearchable {
 
             if (isValidStraightMove(newRow, newCol)) {
                 MazeState neighbor = new MazeState(newRow, newCol, currentMazeState);
-                neighbor.setCost(currentMazeState.getCost() + 10);
+                neighbor.setCost(currentMazeState.getCost() + 10);//magic number
                 neighbors.add(neighbor);
             }
         }
@@ -71,7 +71,7 @@ public class SearchableMaze implements ISearchable {
 
             if (isValidDiagonalMove(row, col, dRow, dCol)) {
                 MazeState neighbor = new MazeState(newRow, newCol, currentMazeState);
-                neighbor.setCost(currentMazeState.getCost() + 15);
+                neighbor.setCost(currentMazeState.getCost() + 15);//magic number
                 neighbors.add(neighbor);
             }
         }

@@ -1,11 +1,11 @@
 package algorithms.search;
 
-public class AState {
+public abstract class AState {
 
     private AState cameFrom;
-    private int cost;
+    private double cost;
 
-    public AState(AState cameFrom, int cost) {
+    public AState(AState cameFrom, double cost) {
         this.cameFrom = cameFrom;
         this.cost = cost;
     }
@@ -14,7 +14,7 @@ public class AState {
         return cameFrom;
     }
 
-    public int getCost() {
+    public double getCost() {
         return cost;
     }
 
@@ -22,8 +22,9 @@ public class AState {
         this.cameFrom = cameFrom;
     }
 
-    public void setCost(int cost) {
+    public void setCost(double cost) {
         this.cost = cost;
     }
 
+    public abstract int compareTo(AState other);
 }

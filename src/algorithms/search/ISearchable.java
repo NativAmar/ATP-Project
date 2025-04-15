@@ -3,6 +3,7 @@ package algorithms.search;
 import java.util.ArrayList;
 
 public interface ISearchable {
+
     /**
      *
      * @return the start state of the maze
