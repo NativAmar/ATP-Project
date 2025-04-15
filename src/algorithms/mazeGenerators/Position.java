@@ -1,17 +1,38 @@
 package algorithms.mazeGenerators;
 
+/**
+ * Represents a position in a 2D grid by row and column indices.
+ */
 public class Position {
     private int row;
     private int column;
 
-    public Position(int row,int column){
-        this.row=row;
-        this.column=column;
+    /**
+     * Constructs a Position with specified row and column.
+     *
+     * @param row    the row index
+     * @param column the column index
+     */
+    public Position(int row, int column) {
+        this.row = row;
+        this.column = column;
     }
-    public int getRowIndex(){
+
+    /**
+     * Returns the row index of this position.
+     *
+     * @return the row index
+     */
+    public int getRowIndex() {
         return this.row;
     }
-    public int getColumnIndex(){
+
+    /**
+     * Returns the column index of this position.
+     *
+     * @return the column index
+     */
+    public int getColumnIndex() {
         return this.column;
     }
 
@@ -27,5 +48,4 @@ public class Position {
         Position o = (Position) other;
         return this.row == o.row && this.column == o.column;
     }
-
 }
