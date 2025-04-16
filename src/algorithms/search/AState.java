@@ -26,5 +26,7 @@ public abstract class AState {
         this.cost = cost;
     }
 
+    public abstract void calculateHeuristic(AState goal);
+
     public abstract int compareTo(AState other);
 }

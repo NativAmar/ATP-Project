@@ -37,6 +37,14 @@ public class MazeState extends AState implements Comparable<AState> {
     }
 
     @Override
+    public void calculateHeuristic(AState goal) {
+        if (!(goal instanceof MazeState)) return;
+        MazeState mGoal = (MazeState) goal;
+        int manhattan = Math.abs(this.position.getRowIndex() - mGoal.position.getRowIndex()) + Math.abs(this.position.getColumnIndex()- mGoal.position.getColumnIndex());
+        this.setCost(manhattan);
+    }
+
+    @Override
     public int compareTo(AState other) {
         return Double.compare(this.getCost(), other.getCost());
     }

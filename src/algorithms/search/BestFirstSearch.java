@@ -38,6 +38,7 @@ public class BestFirstSearch extends ASearchingAlgorithm {
             for (AState neighbor : neighbors) {
                 if (!closedSet.contains(neighbor) && !openList.contains(neighbor)) {
                     neighbor.setCameFrom(current);
+                    neighbor.calculateHeuristic(goalPos);
                     openList.add(neighbor); // cost's set in SearchableMaze
                 }
             }
