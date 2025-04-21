@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 public class SearchableMaze implements ISearchable {
     private Maze maze;
+    public static final int straightMove = 10;
+    public static final int diagonalMove = 15;
 
     public SearchableMaze(Maze maze) {
         this.maze = maze;
@@ -57,7 +59,7 @@ public class SearchableMaze implements ISearchable {
 
             if (isValidStraightMove(newRow, newCol)) {
                 MazeState neighbor = new MazeState(newRow, newCol, currentMazeState);
-                neighbor.setCost(currentMazeState.getCost() + 10);//magic number
+                neighbor.setCost(currentMazeState.getCost() + straightMove);
                 neighbors.add(neighbor);
             }
         }
@@ -71,7 +73,7 @@ public class SearchableMaze implements ISearchable {
 
             if (isValidDiagonalMove(row, col, dRow, dCol)) {
                 MazeState neighbor = new MazeState(newRow, newCol, currentMazeState);
-                neighbor.setCost(currentMazeState.getCost() + 15);//magic number
+                neighbor.setCost(currentMazeState.getCost() + diagonalMove);
                 neighbors.add(neighbor);
             }
         }
