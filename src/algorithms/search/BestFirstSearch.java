@@ -4,12 +4,34 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
-public class BestFirstSearch extends ASearchingAlgorithm {
+/**
+ * Implementation of the Best-First Search (BestFS) algorithm for solving searchable problems.
+ * This algorithm selects the next node to explore based on a heuristic value,
+ * prioritizing nodes estimated to be closer to the goal.
+ *
+ * Extends BreadthFirstSearch but overrides behavior to use a priority queue and heuristics.
+ */
+public class BestFirstSearch extends BreadthFirstSearch {
 
+    /**
+     * Constructs a BestFirstSearch algorithm instance.
+     * Initializes the open list as a priority queue and resets tracking structures.
+     */
     public BestFirstSearch () {
-        super("Best First Search");
+        this.openList = new PriorityQueue<>();
+        this.nodesEvaluated = 0;
+        this.name = "Best First Search";
+        this.closedSet = new HashSet<>();
     }
 
+    /**
+     * Solves the given searchable problem using Best-First Search strategy.
+     *
+     * Nodes are prioritized based on heuristic estimations towards the goal.
+     *
+     * @param searchable The problem to be solved.
+     * @return A Solution representing the path from start to goal, or null if no solution exists.
+     */
     @Override
     public Solution solve(ISearchable searchable) {
         if (searchable == null)
@@ -18,12 +40,10 @@ public class BestFirstSearch extends ASearchingAlgorithm {
         AState startPos = searchable.getStartState();
         AState goalPos = searchable.getGoalState();
 
-        PriorityQueue<AState> openList = new PriorityQueue<>();
-        HashSet<AState> closedSet = new HashSet<>();
-
         startPos.setCost(0);
         openList.add(startPos);
         this.nodesEvaluated = 0;
+        this.closedSet.clear();
 
         while (!openList.isEmpty()) {
             AState current = openList.poll();
@@ -37,24 +57,16 @@ public class BestFirstSearch extends ASearchingAlgorithm {
 
             for (AState neighbor : neighbors) {
                 if (!closedSet.contains(neighbor) && !openList.contains(neighbor)) {
+                    double moveCost = neighbor.getCost();
                     neighbor.setCameFrom(current);
+                    neighbor.setCost(current.getCost() + moveCost);
                     neighbor.calculateHeuristic(goalPos);
-                    openList.add(neighbor); // cost's set in SearchableMaze
+                    openList.add(neighbor);
                 }
             }
         }
 
         // In case it's not possible to reach the goalPos
         return null;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public int getNumberOfNodesEvaluated() {
-        return this.nodesEvaluated;
     }
 }

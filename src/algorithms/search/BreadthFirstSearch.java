@@ -2,10 +2,20 @@ package algorithms.search;
 
 import java.util.*;
 
+/**
+ * Implementation of the Breadth-First Search (BFS) algorithm for solving searchable problems.
+ * This algorithm explores the search space level by level and guarantees finding the shortest path
+ * in terms of the number of steps (if all steps have equal cost).
+ */
 public class BreadthFirstSearch extends ASearchingAlgorithm {
 
+    protected Queue<AState> openList;
+
     public BreadthFirstSearch() {
-        super("Breadth First Search");
+        this.nodesEvaluated = 0;
+        this.name = "Breadth First Search";
+        this.closedSet = new HashSet<>();
+        this.openList = new LinkedList<>();
     }
 
     @Override
@@ -16,11 +26,9 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
         AState startPos = searchable.getStartState();
         AState goalPos = searchable.getGoalState();
 
-        Queue<AState> openList = new LinkedList<>();
-        HashSet<AState> closedSet = new HashSet<>();
-
         openList.add(startPos);
         this.nodesEvaluated = 0;
+        this.closedSet.clear();
 
         while (!openList.isEmpty()) {
             AState current = openList.poll();
@@ -35,22 +43,12 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
             for (AState neighbor : neighbors) {
                 if (!closedSet.contains(neighbor) && !openList.contains(neighbor)) {
                     neighbor.setCameFrom(current);
-                    neighbor.setCost(current.getCost() + 1);
+                    neighbor.setCost(neighbor.getCost() + current.getCost());
                     openList.add(neighbor);
                 }
             }
         }
         // In case it's not possible to reach the goalPos
         return null;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public int getNumberOfNodesEvaluated() {
-        return this.nodesEvaluated;
     }
 }

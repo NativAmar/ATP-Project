@@ -1,22 +1,35 @@
 package algorithms.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Queue;
+import java.util.*;
 
+/**
+ * Abstract base class for all searching algorithms.
+ * Implements common functionalities like tracking evaluated nodes
+ * and constructing valid solution paths.
+ */
 public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
 
     protected int nodesEvaluated;
     protected String name;
+    protected HashSet<AState> closedSet;
 
-    public ASearchingAlgorithm (String name) {
-        this.name = name;
-        this.nodesEvaluated = 0;
-    }
+    /**
+     * Returns the number of nodes evaluated during the last search.
+     *
+     * @return Number of evaluated nodes.
+     */
+    public int getNumberOfNodesEvaluated(){
+        return nodesEvaluated;
+    };
 
-    public abstract int getNumberOfNodesEvaluated();
-
+    /**
+     * Constructs a valid solution path from the goal state to the start state.
+     * Traverses the path backwards using {getCameFrom()} and reverses it
+     * to present the solution from start to goal.
+     *
+     * @param goal The goal state from which to backtrack the solution.
+     * @return A Solution object representing the path from start to goal.
+     */
     protected Solution validSolution(AState goal) {
         ArrayList<AState> sol = new ArrayList<>();
         AState current = goal;
@@ -31,8 +44,21 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
         return new Solution(sol);
     }
 
+    /**
+     * Solves the given searchable problem and returns the solution path.
+     *
+     * @param searchable The searchable problem to solve.
+     * @return A Solution representing the path to the goal, if found.
+     */
     public abstract Solution solve(ISearchable searchable);
 
-    public abstract String getName();
+    /**
+     * Returns the name of the search algorithm.
+     *
+     * @return The algorithm's name.
+     */
+    public String getName(){
+        return name;
+    };
 
 }
