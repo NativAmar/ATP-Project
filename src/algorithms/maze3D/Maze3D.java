@@ -144,40 +144,30 @@ public class Maze3D {
      * and other values are 0 or 1.
      */
     public void print() {
-        System.out.println("int[][][] maze = {");
-
+        System.out.println("{");
         for (int d = 0; d < depth; d++) {
-            System.out.println("  {");
             for (int r = 0; r < row; r++) {
-                System.out.print("    {");
+                System.out.print("{ ");
                 for (int c = 0; c < columns; c++) {
                     if (start != null && d == start.getDepthIndex() && r == start.getRowIndex() && c == start.getColumnIndex()) {
-                        System.out.print("S");
+                        System.out.print("S ");
                     } else if (goal != null && d == goal.getDepthIndex() && r == goal.getRowIndex() && c == goal.getColumnIndex()) {
-                        System.out.print("E");
+                        System.out.print("E ");
                     } else {
-                        System.out.print(maze3D[d][r][c]);
-                    }
-
-                    if (c < columns - 1) {
-                        System.out.print(", ");
+                        System.out.print(maze3D[d][r][c] + " ");
                     }
                 }
-                System.out.print("}");
-                if (r < row - 1) {
-                    System.out.println(",");
-                } else {
-                    System.out.println();
-                }
+                System.out.println("}");
             }
-            System.out.print("  }");
             if (d < depth - 1) {
-                System.out.println(",");
-            } else {
+                System.out.print("---");
+                for (int i = 0; i < columns; i++) {
+                    System.out.print("--");
+                }
                 System.out.println();
             }
         }
-
-        System.out.println("};");
+        System.out.println("}");
     }
+
 }

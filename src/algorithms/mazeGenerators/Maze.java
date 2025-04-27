@@ -118,22 +118,45 @@ public class Maze {
 
 
     /**
-     * Prints the maze to the console.
-     * 'S' marks the start, 'E' marks the end, 0 is path, and 1 is wall.
+     * Prints the maze in a formatted layout.
+     *
+     * The maze is displayed as a two-dimensional array, with each row enclosed in curly braces `{}`,
+     * and each element separated by a comma and a space.
+     *
+     * If a start position (`start`) is defined, it is represented by 'S' instead of the regular cell value.
+     * If an end position (`end`) is defined, it is represented by 'E' instead of the regular cell value.
+     *
+     * Example output:
+     * {
+     *  { 0, 0, 1, 0, 1, 0, 0, 1 },
+     *  { 1, 0, 1, 0, 1, 0, 1, 0 },
+     *  { 1, 0, 0, 0, 0, 0, 0, 1 },
+     *  ...
+     * };
      */
     public void print() {
+        System.out.println("{");
+
         for (int i = 0; i < this.row; i++) {
+            System.out.print(" {");
             for (int j = 0; j < this.columns; j++) {
                 if (start != null && i == start.getRowIndex() && j == start.getColumnIndex()) {
-
                     System.out.print('S');
                 } else if (end != null && i == end.getRowIndex() && j == end.getColumnIndex()) {
                     System.out.print('E');
                 } else {
                     System.out.print(maze[i][j]);
                 }
+
+                if (j < this.columns - 1) {
+                    System.out.print(", ");
+                }
             }
-            System.out.println();
+            System.out.println(" },");
         }
+
+        System.out.println("};");
     }
+
+
 }

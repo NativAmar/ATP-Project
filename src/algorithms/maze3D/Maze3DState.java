@@ -117,6 +117,6 @@ public class Maze3DState extends AState implements Comparable<AState> {
      */
     @Override
     public String toString() {
-        return "Position3D: " + position.toString() + ", Cost: " + this.getCost();
+        return position.toString();
     }
 }

@@ -111,7 +111,7 @@ public class MazeState extends AState implements Comparable<AState> {
      */
     @Override
     public String toString() {
-        return "Position: " + position.toString() + ", Cost: " + this.getCost();
+        return  position.toString();
     }
 
 

@@ -5,7 +5,6 @@ import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.mazeGenerators.IMazeGenerator;
 import algorithms.mazeGenerators.Position;
 import org.junit.Test;
-//import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BestFirstSearchTest {
@@ -30,6 +29,7 @@ public class BestFirstSearchTest {
         assertEquals(maze.getGoalPosition(), lastState.getPosition(),
                 "The last state in the solution should be the goal position.");
     }
+
     @Test
     public void testEmptyMaze() {
         assertThrows(IllegalArgumentException.class, () -> {
@@ -46,7 +46,7 @@ public class BestFirstSearchTest {
 
         BestFirstSearch bfs = new BestFirstSearch();
         bfs.solve(sm);
-        assertTrue(bfs.getNumberOfNodesEvaluated() >= 0, "מספר צמתים שנפתחו צריך להיות אי שלילי");
+        assertTrue(bfs.getNumberOfNodesEvaluated() >= 0, "The number of nodes evaluated should be non-negative.");
     }
 
     @Test
@@ -59,18 +59,18 @@ public class BestFirstSearchTest {
         Solution sol = bfs.solve(sm);
 
         MazeState first = (MazeState) sol.getSolutionPath().get(0);
-        assertEquals(maze.getStartPosition(), first.getPosition(), "המסלול צריך להתחיל בנקודת ההתחלה של המבוך");
+        assertEquals(maze.getStartPosition(), first.getPosition(), "The path should start at the maze's start position.");
     }
 
     @Test
     public void testUnreachableGoal() {
         Maze maze = new Maze(5, 5);
-        // מלא קירות
+        // Fill the maze with walls
         for (int i = 0; i < 5; i++)
             for (int j = 0; j < 5; j++)
                 maze.setMaze(i, j, 1);
 
-        // תן נקודת התחלה ויעד פתוחים אך לא מחוברים
+        // Set open start and goal positions that are not connected
         maze.setMaze(0, 0, 0);
         maze.setStartPosition(new Position(0, 0));
         maze.setMaze(4, 4, 0);
@@ -80,7 +80,7 @@ public class BestFirstSearchTest {
         BestFirstSearch bfs = new BestFirstSearch();
         Solution sol = bfs.solve(sm);
 
-        assertNull(sol, "לא אמור להיות פתרון כשהמטרה לא ניתנת להגעה");
+        assertNull(sol, "There should be no solution when the goal is unreachable.");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class BestFirstSearchTest {
         Solution sol = bfs.solve(sm);
 
         assertTrue(sol.getSolutionPath().size() <= (maze.getRow() + maze.getColumn()),
-                "המסלול לא אמור להיות ארוך בצורה לא הגיונית");
+                "The path length should not be unreasonably long.");
     }
 
     @Test
@@ -106,15 +106,6 @@ public class BestFirstSearchTest {
         int evaluated = bfs.getNumberOfNodesEvaluated();
         int pathSize = sol.getSolutionPath().size();
 
-        assertTrue(evaluated >= pathSize, "מספר הצמתים שנפתחו אמור להיות לפחות באורך הנתיב");
+        assertTrue(evaluated >= pathSize, "The number of nodes evaluated should be at least the path length.");
     }
-
-
-
-
-
-
-
-
-
 }
