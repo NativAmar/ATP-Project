@@ -28,16 +28,23 @@ public class Configurations {
      * @param name - property key
      * @return returns property value
      */
-    public String getProperty(String name){
-        try {
-            InputStream input = new FileInputStream("resources/config.properties");
-            prop.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String getProperty(String name) {
+        if (prop.isEmpty()) {
+            File configFile = new File("resources/config.properties");
+            if (configFile.exists()) {
+                try (InputStream input = new FileInputStream(configFile)) {
+                    prop.load(input);
+                } catch (IOException e) {
+                    System.err.println("Warning: Failed to load config.properties. Using defaults.");
+                }
+            } else {
+                System.out.println("Info: config.properties not found. Using default configuration.");
+            }
         }
 
-        return prop.getProperty(name);
+        return prop.getProperty(name); // Will return null if not found
     }
+
 
     /**
      * @param key - property key

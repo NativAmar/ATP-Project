@@ -26,41 +26,43 @@ public class Server {
     }
 
     public void start() {
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(this.port);
-            serverSocket.setSoTimeout(this.listeningIntervalMS);
+        Thread serverThread = new Thread(() -> {
+            ServerSocket serverSocket = null;
+            try {
+                serverSocket = new ServerSocket(this.port);
+                serverSocket.setSoTimeout(this.listeningIntervalMS);
 
-            while(!this.stop) {
-                try {
-                    Socket clientSocket = serverSocket.accept();
-                    this.threadPool.submit(() -> {
-                        this.ServerStrategy(clientSocket);
-                    });
-                } catch (SocketTimeoutException e) {
-                    //this.stop();
-                    // Nothing — just loop again and check stop
+                while (!this.stop) {
+                    try {
+                        Socket clientSocket = serverSocket.accept();
+                        this.threadPool.submit(() -> {
+                            this.ServerStrategy(clientSocket);
+                        });
+                    } catch (SocketTimeoutException e) {
+                        // Timeout: re-check stop condition
+                    } catch (IOException e) {
+                        System.err.println("Error accepting client: " + e.getMessage());
+                    }
                 }
-                catch (IOException e) {
-                    System.err.println("Error accepting client: " + e.getMessage());
-                }
-            }
 
-            System.out.println("Server stopped");
-        }
-        catch (IOException var1) {
-            System.err.println("Could not start server on port " + port + ": " + var1.getMessage());
-        } finally {
-            if (serverSocket != null && !serverSocket.isClosed()) {
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    System.err.println("Error closing server socket: " + e.getMessage());
+                System.out.println("Server on port " + this.port + " stopped.");
+            } catch (IOException e) {
+                System.err.println("Could not start server on port " + port + ": " + e.getMessage());
+            } finally {
+                if (serverSocket != null && !serverSocket.isClosed()) {
+                    try {
+                        serverSocket.close();
+                    } catch (IOException e) {
+                        System.err.println("Error closing server socket: " + e.getMessage());
+                    }
                 }
+                threadPool.shutdown();
             }
-            threadPool.shutdown();
-        }
+        });
+
+        serverThread.start();
     }
+
 
     private void ServerStrategy(Socket clientSocket) {
         try {

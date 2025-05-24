@@ -84,6 +84,7 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy {
         String search = conf.getProperty("mazeSearchingAlgorithm");
 
         if (search == null) {
+            System.out.println("No search algorithm specified in config. Using default: BestFirstSearch");
             return new BestFirstSearch(); // Default fallback
         }
 
