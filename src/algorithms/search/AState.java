@@ -1,11 +1,13 @@
 package algorithms.search;
 
+import java.io.Serializable;
+
 /**
  * Represents an abstract state in a search space.
  * Serves as the base for specific state implementations in different domains (e.g., MazeState).
  * Each state keeps track of its predecessor and the cost to reach it.
  */
-public abstract class AState {
+public abstract class AState implements Serializable {
 
     /**
      * The state that led to this one (used for backtracking the solution path).

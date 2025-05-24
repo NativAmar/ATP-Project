@@ -1,6 +1,8 @@
 package algorithms.mazeGenerators;
 
-public class Maze {
+import java.io.Serializable;
+
+public class Maze implements Serializable {
     private int[][] maze;
     private int row;
     private int columns;
@@ -73,7 +75,6 @@ public class Maze {
         System.out.println("};");
     }
 
-    // === התוספות שלך ===
 
     /**
      * Converts the Maze object into a byte array representing:

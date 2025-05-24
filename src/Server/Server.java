@@ -14,41 +14,68 @@ public class Server {
     private volatile boolean stop;
     private ExecutorService threadPool;
 
-    public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
+    public Server(int port, int listeningIntervalMS, IServerStrategy strategy, int threadPoolSize) {
         this.port = port;
         this.listeningIntervalMS = listeningIntervalMS;
         this.strategy = strategy;
-        this.threadPool = Executors.newFixedThreadPool(2);
+        this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
+    }
+
+    public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
+        this(port, listeningIntervalMS, strategy, 5); // Default to 5 threads
     }
 
     public void start() {
+        ServerSocket serverSocket = null;
         try {
-            ServerSocket serverSocket = new ServerSocket(this.port);
+            serverSocket = new ServerSocket(this.port);
             serverSocket.setSoTimeout(this.listeningIntervalMS);
 
             while(!this.stop) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                    (new Thread(() -> {
+                    this.threadPool.submit(() -> {
                         this.ServerStrategy(clientSocket);
-                    }
-                    )).start();
-                } catch (SocketTimeoutException var3) {
-
+                    });
+                } catch (SocketTimeoutException e) {
+                    // Nothing — just loop again and check stop
+                }
+                catch (IOException e) {
+                    System.err.println("Error accepting client: " + e.getMessage());
                 }
             }
-        } catch (IOException var4) {
 
+            System.out.println("Server stopped");
+        }
+        catch (IOException var1) {
+            System.err.println("Could not start server on port " + port + ": " + var1.getMessage());
+        } finally {
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                try {
+                    serverSocket.close();
+                } catch (IOException e) {
+                    System.err.println("Error closing server socket: " + e.getMessage());
+                }
+            }
+            threadPool.shutdown();
         }
     }
 
     private void ServerStrategy(Socket clientSocket) {
         try {
             this.strategy.applyStrategy(clientSocket.getInputStream(), clientSocket.getOutputStream());
-            clientSocket.close();
-        } catch (IOException var3) {
-            IOException e = var3;
+        } catch (IOException e) {
+            System.err.println("Error handling client: " + e.getMessage());
+        } finally {
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                System.err.println("Failed to close client socket: " + e.getMessage());
+            }
         }
+    }
 
+    public void stop() {
+        this.stop = true;
     }
 }
