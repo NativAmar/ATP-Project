@@ -38,6 +38,7 @@ public class Server {
                         this.ServerStrategy(clientSocket);
                     });
                 } catch (SocketTimeoutException e) {
+                    //this.stop();
                     // Nothing — just loop again and check stop
                 }
                 catch (IOException e) {
