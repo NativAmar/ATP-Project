@@ -1,58 +1,63 @@
+/**
+ * This class implements a custom InputStream that decompresses data previously
+ * compressed using the MyCompressorOutputStream.
+ * It uses a run-length decoding method to reconstruct the original maze data.
+ */
 package IO;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class MyDecompressorInputStream extends InputStream {
-
     private final InputStream in;
-    private byte currentByte = 0;
-    private int bitIndex = -1;
 
+    /**
+     * Constructs a new MyDecompressorInputStream that wraps the given InputStream.
+     *
+     * @param in the underlying InputStream to read compressed data from
+     */
     public MyDecompressorInputStream(InputStream in) {
         this.in = in;
     }
 
+    /**
+     * Reads a single byte from the input stream (not used in custom decompression).
+     *
+     * @return the byte read
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public int read() throws IOException {
-        if (bitIndex == -1) {
-            int nextByte = in.read();
-            if (nextByte == -1) {
-                return -1;
-            }
-            currentByte = (byte) nextByte;
-            bitIndex = 7;
-        }
-
-        int bit = (currentByte >> bitIndex) & 0x01;
-        bitIndex--;
-
-        return bit;
+        return in.read();
     }
 
+    /**
+     * Reads compressed data from the stream and decompresses it into the provided byte array.
+     *
+     * @param b the destination array to hold the decompressed maze data
+     * @return the number of bytes read into the array
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public int read(byte[] b) throws IOException {
-        int headerSize = 12;
-
+        int i = 0;
         // Read header as-is
-        int readHeader = in.read(b, 0, headerSize);
-        if (readHeader != headerSize) {
-            throw new IOException("Failed to read header");
+        for (; i < 12; i++) {
+            b[i] = (byte) in.read();
         }
 
-        // Read maze content bit by bit
-        for (int i = headerSize; i < b.length; i++) {
-            int val = read();
-            if (val == -1) {
-                return i;
+        int value = 0;
+        int index = i;
+
+        // Read and decode the run-length compressed data
+        while (index < b.length) {
+            int count = in.read();
+            for (int j = 0; j < count; j++) {
+                b[index++] = (byte) value;
             }
-            b[i] = (byte) val;
+            value = 1 - value; // Toggle between 0 and 1
         }
-        return b.length;
-    }
 
-    @Override
-    public void close() throws IOException {
-        in.close();
+        return b.length;
     }
 }
