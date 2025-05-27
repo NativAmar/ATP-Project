@@ -1,30 +1,27 @@
-/**
- * This class implements a custom InputStream that decompresses data previously
- * compressed using the MyCompressorOutputStream.
- * It uses a run-length decoding method to reconstruct the original maze data.
- */
 package IO;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * A custom InputStream that decompresses maze data previously compressed with
+ * MyCompressorOutputStream using run-length decoding.
+ * Assumes the first 12 bytes are uncompressed header, and the rest is
+ * alternating counts of 0s and 1s.
+ */
 public class MyDecompressorInputStream extends InputStream {
     private final InputStream in;
 
     /**
-     * Constructs a new MyDecompressorInputStream that wraps the given InputStream.
-     *
-     * @param in the underlying InputStream to read compressed data from
+     * Constructor that wraps another input stream.
+     * @param in The underlying InputStream to read from.
      */
     public MyDecompressorInputStream(InputStream in) {
         this.in = in;
     }
 
     /**
-     * Reads a single byte from the input stream (not used in custom decompression).
-     *
-     * @return the byte read
-     * @throws IOException if an I/O error occurs
+     * Not used. Provided to comply with InputStream interface.
      */
     @Override
     public int read() throws IOException {
@@ -32,27 +29,29 @@ public class MyDecompressorInputStream extends InputStream {
     }
 
     /**
-     * Reads compressed data from the stream and decompresses it into the provided byte array.
-     *
-     * @param b the destination array to hold the decompressed maze data
-     * @return the number of bytes read into the array
-     * @throws IOException if an I/O error occurs
+     * Reads and decompresses data from the stream into the given byte array.
+     * Reads the first 12 bytes as-is (header), then reads an initial value (0 or 1),
+     * followed by alternating counts representing how many times each value repeats.
+     * @param b The byte array to fill with decompressed data.
+     * @return The number of bytes read (filled into b).
      */
     @Override
     public int read(byte[] b) throws IOException {
         int i = 0;
-        // Read header as-is
+
+        // Read the header directly
         for (; i < 12; i++) {
             b[i] = (byte) in.read();
         }
 
-        int value = 0;
+        // Read the initial value (0 or 1)
+        int value = in.read();
         int index = i;
 
-        // Read and decode the run-length compressed data
+        // Decode run-length encoded counts
         while (index < b.length) {
             int count = in.read();
-            for (int j = 0; j < count; j++) {
+            for (int j = 0; j < count && index < b.length; j++) {
                 b[index++] = (byte) value;
             }
             value = 1 - value; // Toggle between 0 and 1
