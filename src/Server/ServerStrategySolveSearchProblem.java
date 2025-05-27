@@ -134,17 +134,17 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy {
             String fileName = checkFile(String.valueOf(ones));
             String fullMazePath = cacheDir.getPath() + File.separator + fileName;
 
-            // Save compressed maze
-            try (OutputStream out = new MyCompressorOutputStream(new FileOutputStream("tempMaze.maze"))) {
-                out.write(mazeBytes);
-                out.flush();
-            }
+            // Compress directly to final destination using ByteArrayOutputStream
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                 MyCompressorOutputStream compressor = new MyCompressorOutputStream(baos)) {
 
-            Path tempPath = Paths.get("tempMaze.maze");
-            byte[] compressedMazeBytes = Files.readAllBytes(tempPath);
+                compressor.write(mazeBytes);
+                compressor.flush();
 
-            try (FileOutputStream fos = new FileOutputStream(fullMazePath)) {
-                fos.write(compressedMazeBytes);
+                // Write compressed bytes directly to final file
+                try (FileOutputStream fos = new FileOutputStream(fullMazePath)) {
+                    fos.write(baos.toByteArray());
+                }
             }
 
             // Save solution
@@ -153,11 +153,9 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy {
                 writer.println(solution.toString());
             }
 
-            // Clean up temp file
-            Files.deleteIfExists(tempPath);
-
         } catch (IOException e) {
             System.err.println("Error saving maze to cache: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -19,29 +19,23 @@ public class Server {
     private ExecutorService threadPool;
 
     /**
-     * Constructs a new Server with a specified thread pool size.
-     *
+     * Constructs a new {@code Server} instance.
+     * The thread pool size is determined from the configuration file (via {@code Configurations.getInstance()}),
+     * using the property {@code "threadPoolSize"}. If the property is missing or invalid, a default of 10 threads is used.
+     * The constructor ignores the {@code threadPoolSize} parameter passed and always reads from configuration.
      * @param port                the port number on which the server will listen
-     * @param listeningIntervalMS the time in milliseconds to wait for a client before checking the stop condition
-     * @param strategy            the strategy to apply when handling a client
-     * @param threadPoolSize      the number of threads in the pool for handling client requests
+     * @param listeningIntervalMS the time in milliseconds to wait for a client before re-checking the stop condition
+     * @param strategy            the strategy to apply when handling a client connection
      */
-    public Server(int port, int listeningIntervalMS, IServerStrategy strategy, int threadPoolSize) {
+    public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
         this.port = port;
         this.listeningIntervalMS = listeningIntervalMS;
         this.strategy = strategy;
-        this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
-    }
-
-    /**
-     * Constructs a new Server with a default thread pool size of 5.
-     *
-     * @param port                the port number on which the server will listen
-     * @param listeningIntervalMS the time in milliseconds to wait for a client before checking the stop condition
-     * @param strategy            the strategy to apply when handling a client
-     */
-    public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
-        this(port, listeningIntervalMS, strategy, 5); // Default to 5 threads
+        Configurations conf = Configurations.getInstance();
+        String size = conf.getProperty("threadPoolSize");
+        if (size == null)
+            size = "10";
+        this.threadPool = Executors.newFixedThreadPool(Integer.parseInt(size));
     }
 
     /**
