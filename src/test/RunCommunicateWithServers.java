@@ -53,7 +53,7 @@ public class RunCommunicateWithServers {
                                 is.read(decompressedMaze);
                                 // Fill decompressedMaze with bytes
                                 Maze maze = new Maze(decompressedMaze);
-                                //maze.print();
+                                maze.print();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -77,7 +77,7 @@ public class RunCommunicateWithServers {
                                 toServer.flush();
                                 MyMazeGenerator mg = new MyMazeGenerator();
                                 Maze maze = mg.generate(50, 50);
-                                //maze.print();
+                                maze.print();
                                 toServer.writeObject(maze); //send maze to server
                                 toServer.flush();
                                 Solution mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server

@@ -7,6 +7,10 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * A simple multi-threaded server that listens for client connections
+ * and applies a provided server strategy to each client using a thread pool.
+ */
 public class Server {
     private int port;
     private int listeningIntervalMS;
@@ -14,6 +18,14 @@ public class Server {
     private volatile boolean stop;
     private ExecutorService threadPool;
 
+    /**
+     * Constructs a new Server with a specified thread pool size.
+     *
+     * @param port                the port number on which the server will listen
+     * @param listeningIntervalMS the time in milliseconds to wait for a client before checking the stop condition
+     * @param strategy            the strategy to apply when handling a client
+     * @param threadPoolSize      the number of threads in the pool for handling client requests
+     */
     public Server(int port, int listeningIntervalMS, IServerStrategy strategy, int threadPoolSize) {
         this.port = port;
         this.listeningIntervalMS = listeningIntervalMS;
@@ -21,10 +33,21 @@ public class Server {
         this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
     }
 
+    /**
+     * Constructs a new Server with a default thread pool size of 5.
+     *
+     * @param port                the port number on which the server will listen
+     * @param listeningIntervalMS the time in milliseconds to wait for a client before checking the stop condition
+     * @param strategy            the strategy to apply when handling a client
+     */
     public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
         this(port, listeningIntervalMS, strategy, 5); // Default to 5 threads
     }
 
+    /**
+     * Starts the server in a new thread.
+     * Listens for incoming client connections and handles each one using the strategy and a thread from the pool.
+     */
     public void start() {
         Thread serverThread = new Thread(() -> {
             ServerSocket serverSocket = null;
@@ -63,7 +86,11 @@ public class Server {
         serverThread.start();
     }
 
-
+    /**
+     * Handles a client connection by applying the server strategy.
+     *
+     * @param clientSocket the socket connected to the client
+     */
     private void ServerStrategy(Socket clientSocket) {
         try {
             this.strategy.applyStrategy(clientSocket.getInputStream(), clientSocket.getOutputStream());
@@ -78,6 +105,10 @@ public class Server {
         }
     }
 
+    /**
+     * Stops the server gracefully. The server will finish handling current clients
+     * and will no longer accept new ones.
+     */
     public void stop() {
         this.stop = true;
     }

@@ -6,9 +6,23 @@ import algorithms.mazeGenerators.MyMazeGenerator;
 
 import java.io.*;
 
+/**
+ * A server strategy that generates a maze based on client input (dimensions),
+ * compresses it, and sends it back to the client.
+ */
 public class ServerStrategyGenerateMaze implements IServerStrategy{
     private static final int MAX_DIMENSION = 1000;
 
+    /**
+     * Applies the strategy of generating and compressing a maze.
+     * The client is expected to send an {@code int[]} of size 2 representing the
+     * desired maze dimensions (rows and columns). If the input is valid, a maze is
+     * generated using {@link MyMazeGenerator}, compressed using {@link MyCompressorOutputStream},
+     * and the resulting byte array is returned to the client.
+     *
+     * @param inputStream  the input stream from the client
+     * @param outputStream the output stream to send data back to the client
+     */
     @Override
     public void applyStrategy(InputStream inputStream, OutputStream outputStream) {
         try {
@@ -35,6 +49,7 @@ public class ServerStrategyGenerateMaze implements IServerStrategy{
             int rows = dimensions[0];
             int cols = dimensions[1];
 
+            // Validate maze size
             if (rows <= 0 || cols <= 0 || rows > MAX_DIMENSION || cols > MAX_DIMENSION) {
                 System.err.printf("Invalid maze size: rows=%d, cols=%d%n", rows, cols);
                 objectOutputStream.writeObject(null);

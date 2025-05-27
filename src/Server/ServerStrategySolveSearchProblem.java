@@ -12,8 +12,22 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * A server strategy that solves a maze sent by the client.
+ * It supports caching previously solved mazes by comparing compressed byte arrays.
+ * If a solution is found in the cache, it is returned immediately; otherwise,
+ * the maze is solved using the configured search algorithm and stored for future use.
+ */
 public class ServerStrategySolveSearchProblem implements IServerStrategy {
 
+    /**
+     * Reads a maze from the client, checks if the solution is already cached.
+     * If cached, the solution is returned; otherwise, the maze is solved,
+     * the solution is cached, and returned to the client.
+     *
+     * @param inputStream  Input stream from the client
+     * @param outputStream Output stream to send the solution
+     */
     @Override
     public void applyStrategy(InputStream inputStream, OutputStream outputStream) {
         try (ObjectInputStream clientInput = new ObjectInputStream(inputStream);
@@ -27,7 +41,7 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy {
             byte[] mazeBytes = maze.toByteArray();
             Solution solution;
 
-            // Count ones in maze for caching key
+            // Count '1's in maze for caching key
             int ones = 0;
             for (byte b : mazeBytes) {
                 if (b == 1) ones++;
@@ -77,7 +91,10 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy {
     }
 
     /**
-     * Gets the configured search algorithm from configuration
+     * Retrieves the search algorithm from the configuration.
+     * Falls back to BestFirstSearch if unspecified or invalid.
+     *
+     * @return a configured search algorithm instance
      */
     private static ASearchingAlgorithm getConfiguredSearchAlgorithm() {
         Configurations conf = Configurations.getInstance();
@@ -100,7 +117,11 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy {
     }
 
     /**
-     * Saves the maze and solution to cache directory
+     * Saves a newly solved maze and its solution to the cache directory.
+     *
+     * @param solution   the solution to the maze
+     * @param mazeBytes  the original uncompressed maze byte array
+     * @param ones       the number of '1's used to create a unique identifier
      */
     private static void saveMaze(Solution solution, byte[] mazeBytes, int ones) {
         try {
@@ -160,7 +181,11 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy {
     }
 
     /**
-     * Checks if maze already exists in cache
+     * Checks whether a maze already exists in the cache by comparing compressed bytes.
+     *
+     * @param ones                the unique identifier prefix based on '1's count
+     * @param compressedMazeBytes the byte content of the current compressed maze
+     * @return the cached file name if found, otherwise {@code null}
      */
     private static String mazeExists(String ones, byte[] compressedMazeBytes) throws IOException {
         String tempDirectoryPath = System.getProperty("java.io.tmpdir");
