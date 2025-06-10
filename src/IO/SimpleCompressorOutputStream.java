@@ -1,7 +1,3 @@
-/**
- * This class implements a simple compressor using a basic run-length encoding (RLE).
- * It compresses sequences of 0s and 1s into counts to reduce data size.
- */
 package IO;
 
 import java.io.IOException;
@@ -10,49 +6,39 @@ import java.io.OutputStream;
 public class SimpleCompressorOutputStream extends OutputStream {
     private final OutputStream out;
 
-    /**
-     * Constructs a new SimpleCompressorOutputStream.
-     *
-     * @param out the underlying OutputStream to which compressed data is written
-     */
     public SimpleCompressorOutputStream(OutputStream out) {
         this.out = out;
     }
 
-    /**
-     * Writes a single byte to the output stream (not used).
-     *
-     * @param b the byte to write
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     public void write(int b) throws IOException {
         out.write(b);
     }
 
-    /**
-     * Compresses the given byte array using simple RLE and writes it to the output stream.
-     *
-     * @param b the byte array to compress
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     public void write(byte[] b) throws IOException {
-        int i = 0;
-        for (; i < 12; i++) {
-            out.write(b[i]); // Write header
+        // Write header (first 12 bytes)
+        for (int i = 0; i < 12; i++) {
+            out.write(b[i]);
         }
 
+        // Compress the maze body from index 12 onwards
+        int currentValue = b[12];
         int count = 1;
-        for (; i < b.length - 1; i++) {
-            if (b[i] == b[i + 1] && count < 255) {
+
+        for (int i = 13; i < b.length; i++) {
+            if (b[i] == currentValue && count < 255) {
                 count++;
             } else {
+                out.write(currentValue);
                 out.write(count);
+                currentValue = b[i];
                 count = 1;
             }
         }
 
-        out.write(count); // write the final count
+        // Write the last pair
+        out.write(currentValue);
+        out.write(count);
     }
 }
