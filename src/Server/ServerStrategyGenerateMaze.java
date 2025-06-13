@@ -1,8 +1,7 @@
 package Server;
 
 import IO.MyCompressorOutputStream;
-import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.MyMazeGenerator;
+import algorithms.mazeGenerators.*;
 
 import java.io.*;
 
@@ -10,69 +9,99 @@ import java.io.*;
  * A server strategy that generates a maze based on client input (dimensions),
  * compresses it, and sends it back to the client.
  */
-public class ServerStrategyGenerateMaze implements IServerStrategy{
+public class ServerStrategyGenerateMaze implements IServerStrategy {
     private static final int MAX_DIMENSION = 1000;
 
     /**
      * Applies the strategy of generating and compressing a maze.
      * The client is expected to send an {@code int[]} of size 2 representing the
      * desired maze dimensions (rows and columns). If the input is valid, a maze is
-     * generated using {@link MyMazeGenerator}, compressed using {@link MyCompressorOutputStream},
-     * and the resulting byte array is returned to the client.
+     * generated using the selected generator, compressed, and the resulting byte array
+     * is returned to the client.
      *
      * @param inputStream  the input stream from the client
      * @param outputStream the output stream to send data back to the client
      */
     @Override
     public void applyStrategy(InputStream inputStream, OutputStream outputStream) {
+        ObjectOutputStream toClient = null;
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.flush();
+            ObjectInputStream fromClient = new ObjectInputStream(inputStream);
+            toClient = new ObjectOutputStream(outputStream);
+            toClient.flush();
 
-            // maze input handling
-            Object obj = objectInputStream.readObject();
+            // --- Input Handling & Validation ---
+            Object obj = fromClient.readObject();
             if (!(obj instanceof int[])) {
                 System.err.println("Invalid input: expected int[2]");
-                objectOutputStream.writeObject(null);
+                toClient.writeObject(null);
+                toClient.flush();
                 return;
             }
-
-            int[] dimensions = (int[]) obj;
-
-            if (dimensions.length != 2) {
+            int[] mazeDimensions = (int[]) obj;
+            if (mazeDimensions.length != 2) {
                 System.err.println("Invalid input length: expected 2");
-                objectOutputStream.writeObject(null);
+                toClient.writeObject(null);
+                toClient.flush();
                 return;
             }
+            int rows = mazeDimensions[0], cols = mazeDimensions[1];
 
-            int rows = dimensions[0];
-            int cols = dimensions[1];
-
-            // Validate maze size
             if (rows <= 0 || cols <= 0 || rows > MAX_DIMENSION || cols > MAX_DIMENSION) {
                 System.err.printf("Invalid maze size: rows=%d, cols=%d%n", rows, cols);
-                objectOutputStream.writeObject(null);
+                toClient.writeObject(null);
+                toClient.flush();
                 return;
             }
 
-            // Generate the maze
-            MyMazeGenerator generator = new MyMazeGenerator(); // <- change to any generator you have
-            Maze maze = generator.generate(rows, cols);
+            // --- Maze Generator Selection ---
+            String generatorName = null;
+            try {
+                generatorName = Configurations.getInstance().getProperty("mazeGenerationAlgorithm");
+            } catch (Throwable t) {
+                // If Configurations not available, fallback to default
+            }
+            AMazeGenerator generator;
+            if ("SimpleMazeGenerator".equalsIgnoreCase(generatorName)) {
+                generator = new SimpleMazeGenerator();
+            } else if ("EmptyMazeGenerator".equalsIgnoreCase(generatorName)) {
+                generator = new EmptyMazeGenerator();
+            } else {
+                generator = new MyMazeGenerator(); // Default
+            }
 
-            // Compress the maze
-            ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-            MyCompressorOutputStream compressor = new MyCompressorOutputStream(byteOutput);
-            compressor.write(maze.toByteArray());
-            compressor.flush();
-            compressor.close();
+            // --- Maze Generation (protect against generator bugs) ---
+            Maze maze;
+            try {
+                maze = generator.generate(rows, cols);
+            } catch (Throwable t) {
+                System.err.println("Maze generator threw exception: " + t);
+                toClient.writeObject(null);
+                toClient.flush();
+                return;
+            }
 
-            // Send compressed maze back
-            objectOutputStream.writeObject(byteOutput.toByteArray());
-            objectOutputStream.flush();
+            // --- Maze Compression (in memory) ---
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            try (MyCompressorOutputStream compressor = new MyCompressorOutputStream(byteOut)) {
+                compressor.write(maze.toByteArray());
+            }
 
+            // --- Send compressed maze to client ---
+            toClient.writeObject(byteOut.toByteArray());
+            toClient.flush();
         } catch (Exception e) {
-            System.err.println("Error in ServerStrategyGenerateMaze: " + e.getMessage());
+            System.err.println("Error in ServerStrategyGenerateMaze: " + e);
+            // Always respond with null if an error occurs, unless already responded
+            try {
+                if (toClient == null) {
+                    toClient = new ObjectOutputStream(outputStream);
+                }
+                toClient.writeObject(null);
+                toClient.flush();
+            } catch (IOException ioException) {
+                System.err.println("Failed to send error/null to client: " + ioException);
+            }
         }
     }
 }
